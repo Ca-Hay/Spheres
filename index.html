@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <!-- Super magic stuff that makes it work-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
+
+    <script>
+    //SCENE
+        var scene = new THREE.Scene();
+    //CAMERA 
+        var camera = new THREE.PerspectiveCamera(
+            75, //FOV
+            window.innerWidth/ window.innerHeight, //Aspect Ratio
+            0.1, //near and far plane
+            1000
+        );
+    //CAMERA POS
+    camera.position.z = 40;
+    camera.position.x = 0;
+    camera.position.y = 0;
+
+    //create a renderer to render the objects
+    //antialias to prevent it from looking jagged
+        var renderer = new THREE.WebGLRenderer({antialias: true});
+        //BACKGROUND
+        renderer.setClearColor("#000000");
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        //create a canvas element with these renderer settings
+        document.body.appendChild(renderer.domElement);
+        //when the screen is streched, update screen size
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        })
+        //MESH SETTINGS
+        var geometry = new THREE.SphereGeometry(10, 10, 10);
+        var materialNormal = new THREE.MeshNormalMaterial({wireframe:true});
+
+        //ACTUAL MESH
+        var mesh = new THREE.Mesh(geometry, materialNormal);
+        scene.add(mesh);
+
+        var geometry2 = new THREE.SphereGeometry(20, 10, 10);
+        var materialNormal2 = new THREE.MeshNormalMaterial({wireframe:false});
+        var mesh2 = new THREE.Mesh(geometry2, materialNormal2);
+        scene.add(mesh2);
+
+        var geometry3 = new THREE.SphereGeometry(10, 10, 10);
+        var materialNormal3 = new THREE.MeshNormalMaterial({wireframe:true});
+        var mesh3 = new THREE.Mesh(geometry3, materialNormal3);
+        scene.add(mesh3);
+
+        //LIGHTS
+        //colour, intensity, distance, decay.
+        var light = new THREE.PointLight(0xFFFFFF, 3, 500)
+        light.position.set(0,-40,-40);
+        scene.add(light);
+
+        mesh.position.x = Math.floor(Math.random() * (-40 + -20 + 1)) + 20;
+        mesh.position.y = Math.floor(Math.random() * 20) + 1;
+        mesh.position.z = Math.floor(Math.random() * 20) + 1;
+
+        mesh2.position.x = 0;
+
+        mesh3.position.x = Math.floor(Math.random() * (40 - 20 + 1)) + 20;
+        mesh3.position.y = Math.floor(Math.random() * 20) + 1;
+        mesh3.position.z = Math.floor(Math.random() * 20) + 1;
+
+        //ooo fancy function (stops the stuff from getting squished by re-rendering)
+        var render = function() {
+            requestAnimationFrame(render);
+
+            mesh.rotation.x += 0.02;
+            mesh.rotation.y += 0.02;
+
+            mesh2.rotation.x -= 0.005;
+            mesh2.rotation.y -= 0.005;
+
+            mesh3.rotation.x += 0.02;
+            mesh3.rotation.y += 0.02;
+
+
+            //actually render it
+            renderer.render(scene,camera);
+        }
+
+        render();
+
+    </script>
+</body>
+</html> 
